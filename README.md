@@ -66,3 +66,11 @@ Serving Flask app "flask_lstm" (lazy loading)
 ```python server.py --path /path/to/test/csvfile```
 Or
 Use ```curl``` along with data in ```-F``` flag to get Json prediction.
+
+Note: Issue that I faced while runnning flask app to open server:
+```UnsupportedOperation: not writable```
+
+To resolve it :
+You need to edit the ```echo``` function definition at ```../site-packages/click/utils.py``` the default value for the ```file``` parameter must be ```sys.stdout``` instead of ```None```.
+Do the same for the ```secho``` function definition at ```../site-packages/click/termui.py```.
+[reference](https://github.com/plotly/dash/issues/257)
