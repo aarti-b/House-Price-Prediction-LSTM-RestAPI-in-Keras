@@ -42,7 +42,7 @@ To deactivate run : ```source deactivate```
 
 (A) ----->  To get Analysis of data execute script (1). Type following command on shell:
 
-```python HS_price_prediction.py --path /home/aarti/Downloads/all/train.csv --analysis True```
+```python HS_price_prediction.py --path /path/to/train.csv --analysis True```
 
 path to csv file is required. If you want final data then replace ```--analysis with --final_data```.
 
