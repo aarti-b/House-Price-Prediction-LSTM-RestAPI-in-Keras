@@ -149,7 +149,7 @@ def final_data(path):
     missing_data.head(20)
     
     data_new = data.drop((missing_data[missing_data['Total'] > 1]).index,1)
-    #data_new = data.drop(data.loc[data['Electrical'].isnull()].index)
+    data_new = data.drop(data.loc[data['Electrical'].isnull()].index)
     data_new.isnull().sum().max()
     # remove columns based on correlation
     
