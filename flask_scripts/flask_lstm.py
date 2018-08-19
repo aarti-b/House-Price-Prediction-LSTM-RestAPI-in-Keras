@@ -5,17 +5,10 @@ from keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import argparse
-from lstm_price import create_dataset
 
 
 app = Flask(__name__)
-#model = load_model('/home/aarti/Downloads/all/lstmodel.h5')
 
-'''with h5py.File('/home/aarti/Downloads/all/lstmodel.h5', 'r+') as f:
-    if 'optimizer_weights' in f.keys():
-        del f['optimizer_weights']
-        f.close()
-'''
 ap = argparse.ArgumentParser()
 ap.add_argument("-p", "--path", required=True, 
 	help="path of keras model to be loaded")
@@ -24,6 +17,16 @@ args = vars(ap.parse_args())
 path = args["path"] 
 
 model = load_model(path)
+
+# convert an array of values into a dataset matrix
+def create_dataset(dataset, look_back=1):
+  dataX, dataY = [], []
+  for i in range(len(dataset)-look_back-1):
+    a = dataset[i:(i+look_back), 0]
+    dataX.append(a)
+    dataY.append(dataset[i + look_back, 0])
+  return np.array(dataX), np.array(dataY)
+
 
 @app.route('/predict', methods=['POST'])
 def apicall():
@@ -43,26 +46,17 @@ def apicall():
 
     except Exception as e:
         raise e
-    if test.empty:
-        return(bad_request())
-    else:
+    
         
-        prediction = model.predict(test)
-        # inverse transform to get the correct form of prediction
-        pred = scaler.inverse_transform(prediction)
-        final_pred = {'Sale Price' :pred}
-    
-        responses = jsonify(final_pred)
-        responses.status_code = 200
-    
-        return (responses)
+    prediction = model.predict(test)
+    # inverse transform to get the correct form of prediction
+    pred = scaler.inverse_transform(prediction)
+    final_pred = {'Sale Price' :pred}
 
-@app.errorhandler(400)
-def bad_request(error=None):
-    message = {'status': 400,'message': 'Bad Request: ' + request.url + '--> Please check your data payload...',}
-    resp = jsonify(message)
-    resp.status_code = 400
-    return resp
+    responses = jsonify(final_pred)
+    responses.status_code = 200
+
+    return responses
 
 if __name__=='__main__':
     app.run()
