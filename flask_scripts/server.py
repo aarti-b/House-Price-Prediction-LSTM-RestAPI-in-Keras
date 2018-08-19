@@ -21,9 +21,9 @@ def server_file():
     data = df.to_json(orient='records')
     # post data to server
     resp = requests.post("http://127.0.0.1:5000/predict", data = json.dumps(data), headers = header)
-    resp.status_code
-    #get response as SalePrice
-    resp.json()
+    if resp.status_code== 200:
+    	#get response as SalePrice
+    	resp.json()
 
 if __name__=='__main__':
     server_file()
